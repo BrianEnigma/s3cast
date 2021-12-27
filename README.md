@@ -34,8 +34,24 @@ pip3 install boto3
 ./s3cast --profile podcasting --bucket my_bucket_name
 ```
 
+## Usage
 
+In its simplest form, s3cast can be run with just a bucket name:
 
+```
+./main.py --bucket my_podcast_bucket
+```
+
+This will use your default AWS client permissions to look at the files within `my_podcast_bucket`, locate the MP3 files, generate a podcast XMLs, then upload that file to the root of the bucket as `index.xml`.
+
+Other options are available:
+
+- `--profile` will select a specific AWS CLI profile, instead of the default one.
+- `--limit {number}` will limit the RSS feed to only the last `{number}` files it sees in the bucket.
+- `--random` will shuffle the order of the files in the RSS feed.
+- `--dry-run` will perform all actions up to (and including) generating the content of the RSS feed. Instead of uploading it as `index.xml` to the bucket, it will simply print out the file contents.
+
+When using `random` and `limit` at the same time, the shuffling will occur first, followed by limiting the RSS item count.
 
 ## Limits
 
