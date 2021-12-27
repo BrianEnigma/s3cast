@@ -1,0 +1,69 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+
+class ProgramOptions:
+    def __init__(self):
+        self.random = False
+        self.limit = 0
+        self.profile = None
+        self.bucket_name = None
+        self.base_url = None
+        self.dry_run = False
+
+    def __str__(self):
+        result = ''
+        result += "random={0}\n".format(self.random)
+        result += "limit={0}\n".format(self.limit)
+        result += "profile={0}\n".format(self.profile)
+        result += "bucket_name={0}\n".format(self.bucket_name)
+        result += "base_url={0}\n".format(self.base_url)
+        result += "dry_run={0}\n".format(self.dry_run)
+        return result
+
+class ParseArguments:
+    def __init__(self):
+        self._program_options = ProgramOptions()
+
+    def parse(self):
+        result = ProgramOptions()
+
+        # Set up args
+        parser = argparse.ArgumentParser(description='Turn an S3 bucket of mp3 files into a podcast RSS feed.')
+
+        group = parser.add_argument_group(title='AWS Options', description='Arguments related to S3 access.')
+        group.add_argument('--profile', dest='profile', action='store', required=False,
+                            help='aws-cli profile name to use')
+        group.add_argument('--bucket', dest='bucket', action='store', required=True,
+                            help='S3 bucket to use')
+
+        group = parser.add_argument_group(title='Selection', description='Arguments related to selecting files.')
+        group.add_argument('--limit', dest='limit', action='store', help='Maximum number of files to include')
+        group.add_argument('--random', dest='random', action='store_true', help='Whether to randomize the order')
+
+        group = parser.add_argument_group(title='Testing', description='Arguments related to testing.')
+        group.add_argument('--dry-run', dest='dry_run', action='store_true', help='Only print the RSS file, do not upload it')
+
+        # Parse them
+        args = parser.parse_args()
+
+        # Copy in arguments
+        if args.profile:
+            result.profile = args.profile
+        if args.bucket:
+            result.bucket_name = args.bucket
+        if args.limit:
+            result.limit = int(args.limit)
+        if args.random:
+            result.random = True
+        if args.dry_run:
+            result.dry_run = True
+
+        # Check for errors
+        if args.bucket is None or len(args.bucket) == 0:
+            result = None
+            parser.error('A bucket name is required')
+
+        return result
+
