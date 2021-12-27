@@ -12,6 +12,16 @@ This script fills that need. I can upload each new MP3 file to a bucket. Running
 
 This software is written and maintained by me, [Brian Enigma](https://github.com/BrianEnigma). It is copyright 2021 and is licensed under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
 
+## Prerequisites
+
+- Python
+- The boto3 Python package
+- The `aws` client application
+- An S3 bucket...
+	- ...that you've set up
+	- ...that you've uploaded some MP3 files to
+	- ...that you've enabled static website hosting on (this is under “Properties”)
+
 ## Setup
 
 Of course, you will need an S3 bucket with your MP3 media files on it. Part of setting up and accessing that S3 bucket is the AWS permissions. There will be an AWS Access Key ID and an AWS Secret Access Key. You probably had to use them to set up your file transfer application. If they are not already set up in the `aws` CLI program, then you will need to configure it — otherwise you can skip the `aws configure` step.
