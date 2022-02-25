@@ -29,6 +29,7 @@ class RssGenerator:
             result += """<item>
     <title>{filename}</title>
     <description>{filename}</description>
+    <itunes:block>yes</itunes:block>
     <link>{link}</link>
     <enclosure url="{media_link}" type="audio/mpeg" length="{size}"></enclosure>
     <pubDate>Thu, 21 Dec 2016 16:01:07 +0000</pubDate>
