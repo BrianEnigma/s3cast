@@ -22,6 +22,7 @@ class RssGenerator:
 <channel>
 <title>{title}</title>
 <link>{link}<link>
+<itunes:block>yes</itunes:block>
 <language>en-us</language>""".format(
             title=title,
             link=options.base_url)
@@ -32,7 +33,7 @@ class RssGenerator:
     <itunes:block>yes</itunes:block>
     <link>{link}</link>
     <enclosure url="{media_link}" type="audio/mpeg" length="{size}"></enclosure>
-    <pubDate>Thu, 21 Dec 2016 16:01:07 +0000</pubDate>
+    <pubDate>{pubdate}</pubDate>
     <guid>{filename}</guid>
 </item> 
 """.format(

@@ -6,6 +6,7 @@ import sys
 class ProgramOptions:
     def __init__(self):
         self.random = False
+        self.sort_by_name = False
         self.limit = 0
         self.profile = None
         self.bucket_name = None
@@ -41,12 +42,17 @@ class ParseArguments:
         group = parser.add_argument_group(title='Selection', description='Arguments related to selecting files.')
         group.add_argument('--limit', dest='limit', action='store', help='Maximum number of files to include')
         group.add_argument('--random', dest='random', action='store_true', help='Whether to randomize the order')
+        group.add_argument('--sort-by-name', dest='sort_by_name', action='store_true', help='Whether to sort the files by filename')
 
         group = parser.add_argument_group(title='Testing', description='Arguments related to testing.')
         group.add_argument('--dry-run', dest='dry_run', action='store_true', help='Only print the RSS file, do not upload it')
 
         # Parse them
         args = parser.parse_args()
+
+        # Validate
+        if args.random and args.sort_by_name:
+            raise RuntimeError('Cannot randomize and sort at the same time.')
 
         # Copy in arguments
         if args.profile:
@@ -57,6 +63,8 @@ class ParseArguments:
             result.limit = int(args.limit)
         if args.random:
             result.random = True
+        if args.sort_by_name:
+            result.sort_by_name = True
         if args.dry_run:
             result.dry_run = True
 
