@@ -18,10 +18,10 @@ class RssGenerator:
         result = ''
         title = 'Media files from {0}'.format(options.bucket_name)
         result += """<?xml version="1.0" encoding="UTF-8"?>
-<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" version="2.0">
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:podaccess="https://access.acast.com/schema/1.0/" version="2.0">
 <channel>
 <title>{title}</title>
-<link>{link}<link>
+<link>{link}</link>
 <itunes:block>yes</itunes:block>
 <language>en-us</language>""".format(
             title=title,
@@ -35,6 +35,7 @@ class RssGenerator:
     <enclosure url="{media_link}" type="audio/mpeg" length="{size}"></enclosure>
     <pubDate>{pubdate}</pubDate>
     <guid>{filename}</guid>
+    <podaccess:premium locked="true"/>
 </item> 
 """.format(
                 filename=f.filename,
