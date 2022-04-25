@@ -12,6 +12,7 @@ class ProgramOptions:
         self.bucket_name = None
         self.base_url = None
         self.dry_run = False
+        self.private = True
 
     def __str__(self):
         result = ''
@@ -20,6 +21,7 @@ class ProgramOptions:
         result += "profile={0}\n".format(self.profile)
         result += "bucket_name={0}\n".format(self.bucket_name)
         result += "base_url={0}\n".format(self.base_url)
+        result += "private={0}\n".format(self.private)
         result += "dry_run={0}\n".format(self.dry_run)
         return result
 
@@ -39,6 +41,10 @@ class ParseArguments:
         group.add_argument('--bucket', dest='bucket', action='store', required=True,
                             help='S3 bucket to use')
 
+        group = parser.add_argument_group(title='Publishing', description='Arguments related to publishing.')
+        group.add_argument('--private', dest='private', action='store_true', help='Whether to tag the RSS as public/private (default is private)')
+        group.add_argument('--public', dest='public', action='store_true', help='Whether to tag the RSS as public/private (default is private)')
+
         group = parser.add_argument_group(title='Selection', description='Arguments related to selecting files.')
         group.add_argument('--limit', dest='limit', action='store', help='Maximum number of files to include')
         group.add_argument('--random', dest='random', action='store_true', help='Whether to randomize the order')
@@ -53,6 +59,8 @@ class ParseArguments:
         # Validate
         if args.random and args.sort_by_name:
             raise RuntimeError('Cannot randomize and sort at the same time.')
+        if args.private and args.public:
+            raise RuntimeError('Cannot be public and private at the same time.')
 
         # Copy in arguments
         if args.profile:
@@ -67,6 +75,9 @@ class ParseArguments:
             result.sort_by_name = True
         if args.dry_run:
             result.dry_run = True
+        result.private = True
+        if args.public:
+            result.private = False
 
         # Check for errors
         if args.bucket is None or len(args.bucket) == 0:
