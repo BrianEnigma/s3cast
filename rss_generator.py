@@ -22,27 +22,30 @@ class RssGenerator:
 <channel>
 <title>{title}</title>
 <link>{link}</link>
-<itunes:block>yes</itunes:block>
+{blockitunes}
 <language>en-us</language>""".format(
             title=title,
-            link=options.base_url)
+            link=options.base_url,
+            blockitunes=('<itunes:block>yes</itunes:block>' if options.private else ''),)
         for f in file_list:
             result += """<item>
     <title>{filename}</title>
     <description>{filename}</description>
-    <itunes:block>yes</itunes:block>
+    {blockitunes}
     <link>{link}</link>
     <enclosure url="{media_link}" type="audio/mpeg" length="{size}"></enclosure>
     <pubDate>{pubdate}</pubDate>
     <guid>{filename}</guid>
-    <podaccess:premium locked="true"/>
+    {premium}
 </item> 
 """.format(
                 filename=f.filename,
+                blockitunes=('<itunes:block>yes</itunes:block>' if options.private else ''),
                 link=options.base_url,
                 media_link=options.base_url + f.filename,
                 pubdate=RssGenerator.format_timestamp(f.modified),
-                size=f.size
+                size=f.size,
+                premium=('<podaccess:premium locked="true"/>' if options.private else '')
             )
 
         result += '</channel></rss>'
