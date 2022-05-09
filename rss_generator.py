@@ -115,13 +115,16 @@ class RssGenerator:
                       >
                     </p>
                   </video>
-            
-              <script src="https://vjs.zencdn.net/7.18.1/video.min.js"></script>
-            </body>
-            </html>
+                  <ul>
             """.format(
                 title=title,
                 poster=poster,
                 baseurl=options.base_url
             )
+        for f in file_list:
+            result += "<li><a href=\"{media_link}\">{filename}</a></li>\n".format(media_link=options.base_url + f.filename, filename=f.filename)
+        result += """</ul>
+            <script src="https://vjs.zencdn.net/7.18.1/video.min.js"></script>
+            </body>
+            </html>"""
         return result
