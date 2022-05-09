@@ -15,15 +15,19 @@ class MediaFile:
 
 class FileFetcher:
     def __init__(self):
-        pass
+        self._file_list = []
+        self.cover_image = None
 
     @staticmethod
-    def is_wanted_file(filename):
+    def is_media_file(filename):
         return filename.endswith('.mp3')
 
     @staticmethod
-    def fetch(client, bucket_name):
-        result = []
+    def is_cover_image_file(filename):
+        return filename == 'cover.jpg'
+
+    def fetch(self, client, bucket_name):
+        self._file_list = []
         response = client.list_objects_v2(
             Bucket=bucket_name
         )
@@ -32,6 +36,8 @@ class FileFetcher:
             file.filename = item['Key']
             file.modified = item['LastModified']
             file.size = item['Size']
-            if FileFetcher.is_wanted_file(file.filename):
-                result.append(file)
-        return result
+            if FileFetcher.is_media_file(file.filename):
+                self._file_list.append(file)
+            if FileFetcher.is_cover_image_file(file.filename):
+                self.cover_image = file.filename
+        return self._file_list

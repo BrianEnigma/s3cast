@@ -57,7 +57,8 @@ def main():
     except RuntimeError as e:
         print(str(e))
         sys.exit(1)
-    file_list = FileFetcher.fetch(s3, options.bucket_name)
+    file_fetcher = FileFetcher()
+    file_list = file_fetcher.fetch(s3, options.bucket_name)
     new_list = swizzle_list(options, file_list)
     file_list = new_list
     print('')
@@ -65,7 +66,7 @@ def main():
     print('')
     for f in file_list:
         print(f)
-    rss_text = RssGenerator.generate(options, file_list)
+    rss_text = RssGenerator.generate(options, file_list, file_fetcher.cover_image)
     if options.dry_run:
         print(rss_text)
     else:
@@ -73,6 +74,26 @@ def main():
             Bucket=options.bucket_name,
             Key='index.xml',
             Body=rss_text
+        )
+    m3u8_text = RssGenerator.generate_m3u8(options, file_list, file_fetcher.cover_image)
+    if options.dry_run:
+        print(m3u8_text)
+    else:
+        s3.put_object(
+            Bucket=options.bucket_name,
+            Key='index.m3u8',
+            ContentType='application/x-mpegURL',
+            Body=m3u8_text
+        )
+    player_text = RssGenerator.generate_player(options, file_list, file_fetcher.cover_image)
+    if options.dry_run:
+        print(player_text)
+    else:
+        s3.put_object(
+            Bucket=options.bucket_name,
+            Key='player.html',
+            ContentType='text/html',
+            Body=player_text
         )
 
 
