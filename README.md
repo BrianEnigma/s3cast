@@ -18,9 +18,9 @@ This software is written and maintained by me, [Brian Enigma](https://github.com
 - The boto3 Python package
 - The `aws` client application
 - An S3 bucket...
-	- ...that you've set up
-	- ...that you've uploaded some MP3 files to
-	- ...that you've enabled static website hosting on (this is under “Properties”)
+    - ...that you've set up
+    - ...that you've uploaded some MP3 files to
+    - ...that you've enabled static website hosting on (this is under “Properties”)
 
 ## Setup
 
@@ -52,7 +52,9 @@ In its simplest form, s3cast can be run with just a bucket name:
 ./main.py --bucket my_podcast_bucket
 ```
 
-This will use your default AWS client permissions to look at the files within `my_podcast_bucket`, locate the MP3 files, generate a podcast XMLs, then upload that file to the root of the bucket as `index.xml`.
+This will use your default AWS client permissions to look at the files within `my_podcast_bucket`, locate the MP3 files, generate a podcast XMLs, then upload that file to the root of the bucket as `index.xml`. It will also upload an `index.m3u8` with the list of media files as well as `player.html` that acts as a basic JavaScript browser player.
+
+If you have a file in the bucket named `cover.jpg`, then it will be used as the “cover artwork.”
 
 Other options are available:
 
