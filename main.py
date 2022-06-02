@@ -58,15 +58,19 @@ def main():
         print(str(e))
         sys.exit(1)
     file_fetcher = FileFetcher()
-    file_list = file_fetcher.fetch(s3, options.bucket_name)
+    file_fetcher.do_fetch(s3, options.bucket_name)
+    file_list = file_fetcher.get_file_list()
+    description_dictionary = file_fetcher.get_description_dictionary()
+    cover_image = file_fetcher.get_cover_image()
     new_list = swizzle_list(options, file_list)
     file_list = new_list
-    print('')
-    print('')
-    print('')
-    for f in file_list:
-        print(f)
-    rss_text = RssGenerator.generate(options, file_list, file_fetcher.cover_image)
+    #pprint.pprint(description_dictionary)
+    #print('')
+    #print('')
+    #print('')
+    #for f in file_list:
+    #    print(f)
+    rss_text = RssGenerator.generate(options, file_list, description_dictionary, cover_image)
     if options.dry_run:
         print(rss_text)
     else:
@@ -75,7 +79,7 @@ def main():
             Key='index.xml',
             Body=rss_text
         )
-    m3u8_text = RssGenerator.generate_m3u8(options, file_list, file_fetcher.cover_image)
+    m3u8_text = RssGenerator.generate_m3u8(options, file_list, cover_image)
     if options.dry_run:
         print(m3u8_text)
     else:
@@ -85,7 +89,7 @@ def main():
             ContentType='application/x-mpegURL',
             Body=m3u8_text
         )
-    player_text = RssGenerator.generate_player(options, file_list, file_fetcher.cover_image)
+    player_text = RssGenerator.generate_player(options, file_list, cover_image)
     if options.dry_run:
         print(player_text)
     else:

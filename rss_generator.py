@@ -14,7 +14,7 @@ class RssGenerator:
         return result
 
     @staticmethod
-    def generate(options, file_list, cover_image):
+    def generate(options, file_list, description_dictionary, cover_image):
         result = ''
         title = 'Media files from {0}'.format(options.bucket_name)
         itunes_image = ''
@@ -36,9 +36,18 @@ class RssGenerator:
             itunesimage=itunes_image,
             blockitunes=('<itunes:block>yes</itunes:block>' if options.private else ''),)
         for f in file_list:
+            description = ''
+            try:
+                description = description_dictionary[f.filename]
+            except KeyError:
+                pass
+            if description is None:
+                description = ''
+            description = description.replace("\n", "<br/>\n")
             result += """<item>
     <title>{filename}</title>
-    <description>{filename}</description>
+    <description>{filename}
+{description}</description>
     {blockitunes}
     <link>{link}</link>
     <enclosure url="{media_link}" type="audio/mpeg" length="{size}"></enclosure>
@@ -49,6 +58,7 @@ class RssGenerator:
 </item> 
 """.format(
                 filename=f.filename,
+                description=description,
                 blockitunes=('<itunes:block>yes</itunes:block>' if options.private else ''),
                 link=options.base_url,
                 media_link=options.base_url + f.filename,
