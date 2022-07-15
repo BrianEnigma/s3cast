@@ -13,6 +13,7 @@ class ProgramOptions:
         self.base_url = None
         self.dry_run = False
         self.private = True
+        self.index_name = 'index'
 
     def __str__(self):
         result = ''
@@ -20,6 +21,7 @@ class ProgramOptions:
         result += "limit={0}\n".format(self.limit)
         result += "profile={0}\n".format(self.profile)
         result += "bucket_name={0}\n".format(self.bucket_name)
+        result += "index_name={0}\n".format(self.index_name)
         result += "base_url={0}\n".format(self.base_url)
         result += "private={0}\n".format(self.private)
         result += "dry_run={0}\n".format(self.dry_run)
@@ -44,6 +46,7 @@ class ParseArguments:
         group = parser.add_argument_group(title='Publishing', description='Arguments related to publishing.')
         group.add_argument('--private', dest='private', action='store_true', help='Whether to tag the RSS as public/private (default is private)')
         group.add_argument('--public', dest='public', action='store_true', help='Whether to tag the RSS as public/private (default is private)')
+        group.add_argument('--index', dest='index_name', action='store', help='Instead of index.xml, use this name instead.')
 
         group = parser.add_argument_group(title='Selection', description='Arguments related to selecting files.')
         group.add_argument('--limit', dest='limit', action='store', help='Maximum number of files to include')
@@ -67,6 +70,8 @@ class ParseArguments:
             result.profile = args.profile
         if args.bucket:
             result.bucket_name = args.bucket
+        if args.index_name:
+            result.index_name = args.index_name
         if args.limit:
             result.limit = int(args.limit)
         if args.random:
