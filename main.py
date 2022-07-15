@@ -75,7 +75,7 @@ def main():
     else:
         s3.put_object(
             Bucket=options.bucket_name,
-            Key='index.xml',
+            Key='{0}.xml'.format(options.index_name),
             Body=rss_text
         )
     m3u8_text = RssGenerator.generate_m3u8(options, file_list, cover_image)
@@ -84,20 +84,21 @@ def main():
     else:
         s3.put_object(
             Bucket=options.bucket_name,
-            Key='index.m3u8',
+            Key='{0}.m3u8'.format(options.index_name),
             ContentType='application/x-mpegURL',
             Body=m3u8_text
         )
-    player_text = RssGenerator.generate_player(options, file_list, cover_image)
-    if options.dry_run:
-        print(player_text)
-    else:
-        s3.put_object(
-            Bucket=options.bucket_name,
-            Key='player.html',
-            ContentType='text/html',
-            Body=player_text
-        )
+    if options.index_name == 'index':
+        player_text = RssGenerator.generate_player(options, file_list, cover_image)
+        if options.dry_run:
+            print(player_text)
+        else:
+            s3.put_object(
+                Bucket=options.bucket_name,
+                Key='player.html',
+                ContentType='text/html',
+                Body=player_text
+            )
 
 
 if __name__ == '__main__':
