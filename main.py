@@ -27,15 +27,14 @@ def swizzle_list(options, file_list):
 
     # Randomize the list, if asked for.
     if options.random:
-        new_list = random.sample(result, len(result))
-        result = new_list
+        random.shuffle(result)
     if options.sort_by_name:
         result.sort(key=(lambda item : item.filename))
         item_time = datetime.datetime(2022, 1, 1, 0, 0).timestamp()
         for item in result:
             item.modified = datetime.datetime.fromtimestamp(item_time)
             item_time += 60 * 60 * 24
-    else:
+    elif not options.random:
         result.sort(key=(lambda item: item.modified))
     # Trim list to length, if a limit was asked for.
     if 0 < options.limit < len(result):
