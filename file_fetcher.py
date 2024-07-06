@@ -22,7 +22,7 @@ class FileFetcher:
 
     @staticmethod
     def is_media_file(filename):
-        return filename.endswith('.mp3')
+        return filename.endswith('.mp3') or filename.endswith('.m4a')
 
     @staticmethod
     def is_description_file(filename):

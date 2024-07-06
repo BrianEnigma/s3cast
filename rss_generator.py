@@ -86,7 +86,7 @@ class RssGenerator:
         return result
 
     @staticmethod
-    def generate_player(options, file_list, cover_image):
+    def generate_player(options, file_list, description_dictionary, cover_image):
         result = ''
         title = 'Media files from {0}'.format(options.bucket_name)
         poster = ''
@@ -132,9 +132,21 @@ class RssGenerator:
                 baseurl=options.base_url
             )
         for f in file_list:
-            result += "<li><a href=\"{media_link}\">{filename}</a></li>\n".format(media_link=options.base_url + f.filename, filename=f.filename)
+            description = ''
+            try:
+                description = description_dictionary[f.filename]
+            except KeyError:
+                pass
+            if description is None:
+                description = ''
+            result += "<li><a href=\"{media_link}\">{filename}</a><br />\n".format(media_link=options.base_url + f.filename, filename=f.filename)
+            if len(description) > 0:
+                result += "<details><summary>Playlist</summary><pre>"
+                result += description
+                result += "</pre></details>"
+                result += "</li>"
         result += """</ul>
-            <script src="https://vjs.zencdn.net/7.18.1/video.min.js"></script>
-            </body>
-            </html>"""
+        <script src="https://vjs.zencdn.net/7.18.1/video.min.js"></script>
+        </body>
+        </html>"""
         return result

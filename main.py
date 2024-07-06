@@ -89,7 +89,7 @@ def main():
             Body=m3u8_text
         )
     if options.index_name == 'index':
-        player_text = RssGenerator.generate_player(options, file_list, cover_image)
+        player_text = RssGenerator.generate_player(options, file_list, description_dictionary, cover_image)
         if options.dry_run:
             print(player_text)
         else:
