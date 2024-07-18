@@ -47,11 +47,11 @@ class RssGenerator:
             result += """<item>
     <title>{filename}</title>
     <description>{filename}
-{description}</description>
+<![CDATA[{description}]]></description>
     {blockitunes}
     <link>{link}</link>
-    <enclosure url="{media_link}" type="audio/mpeg" length="{size}"></enclosure>
     {enclosure_image}
+    <enclosure url="{media_link}" type="audio/mpeg" length="{size}"></enclosure>
     <pubDate>{pubdate}</pubDate>
     <guid>{filename}</guid>
     {premium}
@@ -131,6 +131,7 @@ class RssGenerator:
                 poster=poster,
                 baseurl=options.base_url
             )
+        result += "<li><a href=\"index.xml\">Podcast RSS Feed</a></li>\n"
         for f in file_list:
             description = ''
             try:
