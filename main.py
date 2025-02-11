@@ -57,7 +57,7 @@ def main():
         print(str(e))
         sys.exit(1)
     file_fetcher = FileFetcher()
-    file_fetcher.do_fetch(s3, options.bucket_name)
+    file_fetcher.do_fetch(s3, options.bucket_name, options.infer_date)
     file_list = file_fetcher.get_file_list()
     description_dictionary = file_fetcher.get_description_dictionary()
     cover_image = file_fetcher.get_cover_image()

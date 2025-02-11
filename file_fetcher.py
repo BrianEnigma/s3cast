@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import boto3
+import datetime
 import re
 
 
@@ -19,6 +20,7 @@ class FileFetcher:
         self._file_list = []
         self._description_list = {}
         self._cover_image = None
+        self._date_matcher = re.compile(r'.*([0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]).*')
 
     @staticmethod
     def is_media_file(filename):
@@ -41,12 +43,22 @@ class FileFetcher:
     def get_cover_image(self):
         return self._cover_image
 
+    def _extract_date(self, filename:str) -> datetime.datetime:
+        result = None
+        matches = self._date_matcher.match(filename)
+        if matches is not None:
+            result = datetime.datetime(
+                int(matches.group(1)[0:4]),
+                int(matches.group(1)[4:6]),
+                int(matches.group(1)[6:8]))
+        return result
+
     # def _fetch_content(self, client, bucket_name, filename):
     #     s3_object = client.Object(bucket_name, filename)
     #     body = s3_object['Body']
     #     return body.read()
 
-    def do_fetch(self, client, bucket_name):
+    def do_fetch(self, client, bucket_name:str, infer_dates:bool):
         self._file_list = []
         response = client.list_objects_v2(
             Bucket=bucket_name
@@ -55,6 +67,10 @@ class FileFetcher:
             file = MediaFile()
             file.filename = item['Key']
             file.modified = item['LastModified']
+            if infer_dates:
+                extracted_date = self._extract_date(file.filename)
+                if extracted_date is not None:
+                    file.modified = extracted_date
             file.size = item['Size']
             if FileFetcher.is_media_file(file.filename):
                 self._file_list.append(file)
