@@ -13,6 +13,7 @@ class ProgramOptions:
         self.base_url = None
         self.dry_run = False
         self.private = True
+        self.infer_date = False
         self.index_name = 'index'
 
     def __str__(self):
@@ -47,6 +48,7 @@ class ParseArguments:
         group.add_argument('--private', dest='private', action='store_true', help='Whether to tag the RSS as public/private (default is private)')
         group.add_argument('--public', dest='public', action='store_true', help='Whether to tag the RSS as public/private (default is private)')
         group.add_argument('--index', dest='index_name', action='store', help='Instead of index.xml, use this name instead.')
+        group.add_argument('--infer-date', dest='infer_date', action='store_true', help='Infer publication YYYYMMDD from filename (default false, use file modification time)')
 
         group = parser.add_argument_group(title='Selection', description='Arguments related to selecting files.')
         group.add_argument('--limit', dest='limit', action='store', help='Maximum number of files to include')
@@ -83,6 +85,8 @@ class ParseArguments:
         result.private = True
         if args.public:
             result.private = False
+        if args.infer_date:
+            result.infer_date = True
 
         # Check for errors
         if args.bucket is None or len(args.bucket) == 0:
